@@ -2,9 +2,7 @@ import chalk from 'chalk';
 import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { loadTenantConfig } from '../utils/config-loader.js';
-const __filename = fileURLToPath(import.meta.url);
 export async function deploy(environment, options) {
     const validEnvironments = ['on-prem', 'cloud', 'docker'];
     if (!validEnvironments.includes(environment)) {
@@ -30,7 +28,7 @@ export async function deploy(environment, options) {
                 await deployCloud(projectDir, config);
                 break;
             case 'docker':
-                await deployDocker(projectDir, config);
+                await deployDocker(projectDir);
                 break;
         }
         console.log(chalk.green('\n✓ Deployment completed successfully!'));
@@ -48,7 +46,10 @@ async function deployOnPrem(projectDir, config) {
     await execa('npm', ['run', 'build'], { cwd: projectDir, stdio: 'inherit' });
     // Build Docker images
     console.log(chalk.bold('\n2. Building Docker images...'));
-    await execa('docker', ['compose', 'build'], { cwd: projectDir, stdio: 'inherit' });
+    await execa('docker', ['compose', 'build'], {
+        cwd: projectDir,
+        stdio: 'inherit',
+    });
     // Generate deployment bundle
     console.log(chalk.bold('\n3. Generating deployment bundle...'));
     const bundleDir = path.join(projectDir, 'deployment-bundle');
@@ -56,8 +57,18 @@ async function deployOnPrem(projectDir, config) {
     // Save Docker images as tar files
     await execa('docker', ['save', '-o', path.join(bundleDir, 'api.tar'), 'lci-platform-api:latest'], { stdio: 'inherit' });
     await execa('docker', ['save', '-o', path.join(bundleDir, 'web.tar'), 'lci-platform-web:latest'], { stdio: 'inherit' });
-    await execa('docker', ['save', '-o', path.join(bundleDir, 'worker.tar'), 'lci-platform-worker:latest'], { stdio: 'inherit' });
-    await execa('docker', ['save', '-o', path.join(bundleDir, 'proxy.tar'), 'lci-platform-proxy:latest'], { stdio: 'inherit' });
+    await execa('docker', [
+        'save',
+        '-o',
+        path.join(bundleDir, 'worker.tar'),
+        'lci-platform-worker:latest',
+    ], { stdio: 'inherit' });
+    await execa('docker', [
+        'save',
+        '-o',
+        path.join(bundleDir, 'proxy.tar'),
+        'lci-platform-proxy:latest',
+    ], { stdio: 'inherit' });
     // Copy docker-compose and config files
     await fs.copy(path.join(projectDir, 'infra/docker/docker-compose.yml'), path.join(bundleDir, 'docker-compose.yml'));
     await fs.copy(path.join(projectDir, 'tenant.config.yaml'), path.join(bundleDir, 'tenant.config.yaml'));
@@ -112,7 +123,7 @@ async function deployCloud(projectDir, config) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.DEPLOYMENT_API_KEY}`,
+            Authorization: `Bearer ${process.env.DEPLOYMENT_API_KEY}`,
         },
         body: JSON.stringify(deployPackage),
     });
@@ -120,11 +131,11 @@ async function deployCloud(projectDir, config) {
         const error = await response.text();
         throw new Error(`Deployment API error: ${response.status} - ${error}`);
     }
-    const result = await response.json();
+    const result = (await response.json());
     console.log(chalk.green(`\n✓ Deployment initiated! Deployment ID: ${result.deploymentId}`));
     console.log(chalk.dim(`Track progress at: ${process.env.DEPLOYMENT_API_URL}/deployments/${result.deploymentId}`));
 }
-async function deployDocker(projectDir, config) {
+async function deployDocker(projectDir) {
     console.log(chalk.cyan('Local Docker deployment (development)'));
     // Check for .env file
     const envPath = path.join(projectDir, '.env');
@@ -134,7 +145,10 @@ async function deployDocker(projectDir, config) {
         console.log(chalk.dim('Please edit .env with your configuration before continuing.'));
     }
     console.log(chalk.bold('\n1. Starting services...'));
-    await execa('docker', ['compose', 'up', '-d'], { cwd: projectDir, stdio: 'inherit' });
+    await execa('docker', ['compose', 'up', '-d'], {
+        cwd: projectDir,
+        stdio: 'inherit',
+    });
     console.log(chalk.bold('\n2. Running database migrations...'));
     await execa('docker', ['compose', 'exec', '-T', 'api', 'npm', 'run', 'prisma:migrate'], { cwd: projectDir, stdio: 'inherit' });
     console.log(chalk.bold('\n3. Seeding initial data...'));

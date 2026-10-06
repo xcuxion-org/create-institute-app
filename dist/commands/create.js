@@ -75,7 +75,8 @@ async function collectConfig(options) {
             type: 'text',
             name: 'slug',
             message: 'Tenant slug (URL-safe, e.g., "legacy-career-institute"):',
-            validate: (value) => /^[a-z0-9-]+$/.test(value) || 'Slug must be lowercase alphanumeric with hyphens',
+            validate: (value) => /^[a-z0-9-]+$/.test(value) ||
+                'Slug must be lowercase alphanumeric with hyphens',
         });
     }
     if (!options.currency) {
@@ -114,7 +115,9 @@ async function collectConfig(options) {
     const answers = await prompts(questions);
     return {
         name: options.name ?? answers.name,
-        slug: options.slug ?? answers.slug ?? slugify(options.name ?? answers.name ?? 'institute'),
+        slug: options.slug ??
+            answers.slug ??
+            slugify(options.name ?? answers.name ?? 'institute'),
         currency: options.currency ?? answers.currency ?? 'GHS',
         timezone: answers.timezone,
         contactEmail: answers.contactEmail,
@@ -163,6 +166,7 @@ function printNextSteps(projectDir) {
     console.log('  npx create-institute-app deploy cloud');
     console.log('\n' + chalk.bold('For on-premise deployment:'));
     console.log('  npx create-institute-app deploy on-prem');
-    console.log('\n' + chalk.dim('Documentation: https://docs.abdac-consult.com/deployment'));
+    console.log('\n' +
+        chalk.dim('Documentation: https://docs.abdac-consult.com/deployment'));
 }
 //# sourceMappingURL=create.js.map

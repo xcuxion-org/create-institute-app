@@ -1,8 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'yaml';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
 export async function generateTenantConfig(projectDir, config) {
     const configPath = path.join(projectDir, 'tenant.config.yaml');
     const yamlContent = yaml.stringify(config, { lineWidth: 120 });
@@ -31,7 +29,8 @@ export function validateTenantConfig(config) {
     if (!config.timezone || config.timezone.trim().length === 0) {
         errors.push('Timezone is required');
     }
-    if (!config.contactEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.contactEmail)) {
+    if (!config.contactEmail ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(config.contactEmail)) {
         errors.push('Valid contact email is required');
     }
     if (!['on-prem', 'cloud'].includes(config.deployment)) {
@@ -55,10 +54,12 @@ export function validateTenantConfig(config) {
     }
     // Validate branding
     if (config.branding) {
-        if (!config.branding.primaryColor || !/^#[0-9a-fA-F]{6}$/.test(config.branding.primaryColor)) {
+        if (!config.branding.primaryColor ||
+            !/^#[0-9a-fA-F]{6}$/.test(config.branding.primaryColor)) {
             warnings.push('Primary color should be a valid hex color (e.g., #1e40af)');
         }
-        if (!config.branding.secondaryColor || !/^#[0-9a-fA-F]{6}$/.test(config.branding.secondaryColor)) {
+        if (!config.branding.secondaryColor ||
+            !/^#[0-9a-fA-F]{6}$/.test(config.branding.secondaryColor)) {
             warnings.push('Secondary color should be a valid hex color (e.g., #3b82f6)');
         }
     }

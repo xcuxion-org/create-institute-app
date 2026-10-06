@@ -1,9 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import { loadTenantConfig, validateTenantConfig } from '../utils/config-loader.js';
-const __filename = fileURLToPath(import.meta.url);
+import { loadTenantConfig, validateTenantConfig, } from '../utils/config-loader.js';
 export async function validateConfig(configPath) {
     const projectDir = process.cwd();
     const targetPath = configPath || path.join(projectDir, 'tenant.config.yaml');

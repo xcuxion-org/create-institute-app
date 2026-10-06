@@ -1,7 +1,5 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
 export async function copyTemplate(templateRoot, targetDir, options) {
     await fs.ensureDir(targetDir);
     await copyDirWithTemplate(templateRoot, targetDir, options);
@@ -17,7 +15,9 @@ async function copyDirWithTemplate(src, dest, options) {
         }
         else {
             const isTemplate = entry.name.endsWith('.template');
-            const destFileName = isTemplate ? entry.name.replace('.template', '') : entry.name;
+            const destFileName = isTemplate
+                ? entry.name.replace('.template', '')
+                : entry.name;
             const finalDestPath = path.join(dest, destFileName);
             const content = await fs.readFile(srcPath, 'utf8');
             const processed = processTemplate(content, options);

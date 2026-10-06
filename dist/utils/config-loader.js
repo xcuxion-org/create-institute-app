@@ -1,9 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import yaml from 'yaml';
-import { fileURLToPath } from 'url';
-import { validateTenantConfig, getDefaultConfig } from './config-generator.js';
-const __filename = fileURLToPath(import.meta.url);
+import { validateTenantConfig, getDefaultConfig, } from './config-generator.js';
 export async function loadTenantConfig(configPath) {
     const content = await fs.readFile(configPath, 'utf8');
     return yaml.parse(content);

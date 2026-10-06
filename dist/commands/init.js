@@ -1,14 +1,12 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import prompts from 'prompts';
 import { generateTenantConfig } from '../utils/config-generator.js';
-const __filename = fileURLToPath(import.meta.url);
 export async function initConfig(options) {
     const projectDir = process.cwd();
     const configPath = path.join(projectDir, 'tenant.config.yaml');
-    if (await fs.pathExists(configPath) && !options.force) {
+    if ((await fs.pathExists(configPath)) && !options.force) {
         console.log(chalk.yellow('tenant.config.yaml already exists. Use --force to overwrite.'));
         process.exit(1);
     }
@@ -24,7 +22,8 @@ export async function initConfig(options) {
             type: 'text',
             name: 'slug',
             message: 'Tenant slug (URL-safe):',
-            validate: (value) => /^[a-z0-9-]+$/.test(value) || 'Slug must be lowercase alphanumeric with hyphens',
+            validate: (value) => /^[a-z0-9-]+$/.test(value) ||
+                'Slug must be lowercase alphanumeric with hyphens',
         },
         {
             type: 'select',
