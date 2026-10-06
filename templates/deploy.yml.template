@@ -1,0 +1,49 @@
+name: Deploy to Cloud
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Deploy to cloud
+        if: github.event.inputs.environment == 'production'
+        run: |
+          echo "Deploying to production..."
+          # Add your production deployment steps here
+
+      - name: Deploy to staging
+        if: github.event.inputs.environment == 'staging'
+        run: |
+          echo "Deploying to staging..."
+          # Add your staging deployment steps here

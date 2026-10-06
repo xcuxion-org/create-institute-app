@@ -1,0 +1,48 @@
+# {{NAME}} - LCI Platform Deployment
+
+This is a configured deployment of the LCI Platform for **{{NAME}}**.
+
+## Quick Start
+
+### Prerequisites
+- Docker & Docker Compose
+- Node.js 20+ (for CLI tools)
+
+### On-Premise Deployment
+
+1. Copy the deployment bundle to your server
+2. Run the installation script:
+   ```bash
+   ./install.sh
+   ```
+3. Edit `.env` with your configuration
+4. Start the stack:
+   ```bash
+   docker compose up -d
+   ```
+
+### Cloud Deployment (Abdac-hosted)
+
+Trigger deployment from the Abdac Consult Developer Dashboard or run:
+```bash
+npx create-institute-app deploy cloud
+```
+
+### Local Development
+
+```bash
+docker compose up -d
+```
+
+## Configuration
+
+- `tenant.config.yaml` - Tenant-specific configuration (modules, branding, etc.)
+- `.env` - Environment variables (database, API keys, etc.)
+
+## Modules
+
+Active modules are defined in `tenant.config.yaml`. Core modules are always active.
+
+## Support
+
+For support, contact Abdac Consult or create a ticket in the Developer Dashboard.
