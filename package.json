@@ -1,6 +1,6 @@
 {
   "name": "@abdac/create-institute-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "CLI tool to scaffold a new institute deployment from the LCI Platform template",
   "bin": {
     "create-institute-app": "./dist/index.js"
