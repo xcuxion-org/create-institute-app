@@ -1,5 +1,5 @@
 {
-  "name": "@abdac/create-institute-app",
+  "name": "@xcuxion-org/create-institute-app",
   "version": "1.0.0",
   "description": "CLI tool to scaffold a new institute deployment from the LCI Platform template",
   "bin": {
