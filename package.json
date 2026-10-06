@@ -1,6 +1,6 @@
 {
   "name": "@xcuxion-org/create-institute-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool to scaffold a new institute deployment from the LCI Platform template",
   "bin": {
     "create-institute-app": "./dist/index.js"
